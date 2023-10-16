@@ -91,7 +91,7 @@ func doHandleFeed(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	w.Header().Set("Content-Type", "application/rss+xml")
-	w.Header().Set("Content-Disposition", "attachment; filename=\"feed.xml\"")
+	// w.Header().Set("Content-Disposition", "attachment; filename=\"feed.xml\"")
 	return rss.Encode(w)
 }
 
