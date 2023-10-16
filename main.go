@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+    "fmt"
+    "os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -32,7 +34,25 @@ func main() {
 	r.Route("/youtube", youtube.Router)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "https://github.com/ksinica/ytpod", http.StatusSeeOther)
+        w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(fmt.Sprintf(`
+        <!DOCTYPE html>
+        <html>
+            <head><title>ytpod</title></head>
+            <body>
+                <h1>fork of <a href="https://github.com/ksinica/ytpod">ytpod</a></h1>
+                <p>Converts a YT channel into a podcatcher-compatible RSS feed.</p>
+                <hr>
+                <p>Supported feed url formats:</p>
+                <ul>
+                    <li>%[1]s/youtube/feed/@USERNAME</li>
+                    <li>%[1]s/youtube/feed/user/USERNAME</li>
+                    <li>%[1]s/youtube/feed/channel/CHANNEL_ID</li>
+                </ul>
+            </body>
+        </html>
+        `, os.Getenv("YTPOD_URL"))))
 	})
 
 	log.Fatal(http.ListenAndServe(":8080", r))
